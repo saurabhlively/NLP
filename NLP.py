@@ -1,6 +1,7 @@
 import re
 import nltk
 from nltk.corpus import stopwords
+from nltk.sentiment import SentimentIntensityAnalyzer
 
 english_stopwords=stopwords.words("english")
 #print(english_stopwords)
@@ -45,12 +46,33 @@ dict_list = [(value,key) for (key,value) in dict.items()]
 sort_list = sorted(dict_list,reverse=True)
 #print(sort_list[:5])
 
+#this code will filterout most common used words via stopwords
 filtered_words=[]
 for count,word in sort_list:
     if word not in english_stopwords:
         filtered_words.append((word,count))
 
-print(filtered_words)
+#print(filtered_words)
+
+#Sentiment analysis of positive/negative chapters
+#Most positive and most negative chapters
+
+analyzer = SentimentIntensityAnalyzer()
+scores=analyzer.polarity_scores("book")
+if scores["pos"] > scores["neg"]:
+    print("Its a positive text")
+else:
+    print("Its a negative text")
+
+#print(scores)
+
+#Chapter sentiment Analysis
+pattern =re.compile("Chapter [0-9]+")
+chapters = re.split(pattern,book)
+chapters = chapters[1:]
+for nr,chapter in enumerate(chapters):
+    scores=analyzer.polarity_scores(chapter)
+    print(nr + 1,scores)
 
 
 
